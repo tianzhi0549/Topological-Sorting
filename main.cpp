@@ -1,5 +1,6 @@
 #include "Matrix.h"
 #include <iostream>
+#include <queue>
 using namespace std;
 char* map[]={"编译原理","C","C++","数据结构","离散数学","初等数学"};
 bool isContainer(int* p,int n,int element)
@@ -15,40 +16,34 @@ bool isContainer(int* p,int n,int element)
 }
 void sort(CMatrix<bool>& m)
 {
-	int* p=new int[m.getColNum()];
-	int nowPos=0;
-	memset(p,0,m.getColNum()*sizeof(int));
-	int i=0;
-	while(1)
+	int* pInDegree=new int[m.getColNum()];
+	queue<int> out;
+	memset(pInDegree,0,m.getColNum()*sizeof(int));
+	for(int i=0;i<m.getColNum();i++)
 	{
-		for(i=0;i<m.getColNum();i++)
+		pInDegree[i]=m.getColNotZeroCount(i);
+		if(m.colIsAllZero(i))
 		{
-			if(m.colIsAllZero(i)&&!isContainer(p,nowPos,i))
+			out.push(i);
+		}
+	}
+	while(!out.empty())
+	{
+		cout<<map[out.front()]<<endl;
+		for(int i=0;i<m.getColNum();i++)
+		{
+			if(m.valueOf(out.front(),i)==1)
 			{
-				m.setRowZero(i);
-				p[nowPos++]=i;
-				break;
+				pInDegree[i]--;
+				if(pInDegree[i]==0)
+				{
+					out.push(i);
+				}
 			}
 		}
-		if(i==m.getColNum())
-		{
-			break;
-		}
+		out.pop();
 	}
-	if(nowPos==m.getColNum())
-	{
-		cout<<"拓扑排序结果:"<<endl;
-		for(i=0;i<m.getColNum();i++)
-		{
-			cout<<map[p[i]]<<' ';
-		}
-		cout<<endl;
-	}else
-	{
-		cout<<"出现回路。"<<endl;
-	}
-	cout<<"----------------------------------------------------"<<endl;
-	delete[] p;
+	delete[] pInDegree;
 }
 int main()
 {

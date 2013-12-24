@@ -75,6 +75,18 @@ public:
 		   }
 		   return 1;
 	   }
+	   int getColNotZeroCount(int colNum)
+	   {
+		   int count=0;
+		   for(int i=0;i<getRowNum();i++)
+		   {
+			   if(valueOf(i,colNum)!=0)
+			   {
+				   count++;
+			   }
+		   }
+		   return count;
+	   }
 	   bool setRowZero(int rowNum)
 	   {
 		   memset(pMat+rowNum*sizeof(T)*getColNum(),0,getColNum()*sizeof(T));
